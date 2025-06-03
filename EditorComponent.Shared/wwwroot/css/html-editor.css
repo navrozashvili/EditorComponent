@@ -1,0 +1,271 @@
+.html-editor-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    min-height: 400px;
+}
+
+.editor-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    font-weight: 600;
+    color: #333;
+}
+
+.editor-wrapper {
+    border: 1px solid #ddd;
+    background-color: white;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.preview-wrapper {
+    border: 1px solid #ddd;
+    background-color: white;
+    height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.ql-container {
+    font-size: 16px;
+    height: calc(100% - 42px);
+}
+
+.ql-toolbar {
+    background-color: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ql-editor {
+    min-height: 350px;
+}
+
+.country-popup {
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    min-width: 200px;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.country-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.country-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.country-item:hover {
+    background-color: #f5f5f5;
+}
+
+.country-item:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .html-editor-container {
+        flex-direction: column;
+    }
+    
+    .editor-section {
+        width: 100%;
+    }
+}
+
+.preview-content {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.preview-content h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+.preview-content h2 {
+    font-size: 1.5em;
+    margin: 0.75em 0;
+}
+
+.preview-content h3 {
+    font-size: 1.17em;
+    margin: 0.83em 0;
+}
+
+.preview-content p {
+    margin: 1em 0;
+}
+
+.preview-content a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.preview-content a:hover {
+    text-decoration: underline;
+}
+
+.preview-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.preview-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+}
+
+.preview-content table td,
+.preview-content table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.preview-content table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.preview-content table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.preview-content ul,
+.preview-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.preview-content ul li,
+.preview-content ol li {
+    margin: 0.5em 0;
+}
+
+.editor-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+}
+
+.ql-toolbar .ql-table-better {
+    width: auto;
+}
+
+.ql-table-operation-menu {
+    z-index: 1002 !important;
+}
+
+.ql-editor table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.ql-editor table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    min-width: 50px;
+    min-height: 25px;
+}
+
+.ql-toolbar .ql-table-insert {
+    width: 28px;
+    height: 24px;
+    padding: 3px 5px;
+    margin: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    float: left;
+    vertical-align: top;
+}
+
+.ql-toolbar .ql-table-insert svg {
+    width: 18px;
+    height: 18px;
+}
+
+.ql-toolbar .ql-table-insert:hover {
+    color: #06c;
+}
+
+.ql-toolbar .ql-table-insert .ql-stroke {
+    stroke: currentColor;
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+.table-picker-popup {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    padding: 10px;
+    user-select: none;
+}
+
+.table-picker-header {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.table-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 20px);
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.table-grid-cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.table-grid-cell:hover,
+.table-grid-cell.active {
+    background: #0066cc;
+    border-color: #0066cc;
+}
+
+.table-picker-info {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+}
+
+.country-popup {
+    z-index: 1003 !important;
+} 

@@ -1,0 +1,170 @@
+﻿@namespace EditorComponent.Shared
+@implements IAsyncDisposable
+
+<div class="html-editor-container">
+    <div class="editor-section">
+        <div class="section-header">Editor</div>
+        <div class="editor-wrapper">
+            <div id="@EditorId" class="editor-content">
+                @if (!_isInitialized)
+                {
+                    <div class="editor-loading">Loading editor...</div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="editor-section">
+        <div class="section-header">Preview</div>
+        <div class="preview-wrapper">
+            <div class="preview-content">
+                @((MarkupString)Value)
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (_showCountryPopup)
+{
+    <div id="@PopupId" class="country-popup" @onclick:stopPropagation="true">
+        <ul class="country-list">
+            @foreach (var country in Countries)
+            {
+                <li class="country-item" @onclick="() => InsertCountry(country)">
+                    @country
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Gets or sets the HTML content of the editor.
+    /// </summary>
+    [Parameter] public string Value { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Callback invoked when the editor content changes.
+    /// </summary>
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    
+    /// <summary>
+    /// Gets or sets whether to show the editor toolbar. Default is true.
+    /// </summary>
+    [Parameter] public bool ShowToolbar { get; set; } = true;
+    
+    /// <summary>
+    /// Gets or sets the list of countries available in the popup. 
+    /// If not provided, uses the default country list.
+    /// </summary>
+    [Parameter] public string[] Countries { get; set; } = DefaultCountries;
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+
+    private readonly string EditorId = $"quill-editor-{Guid.NewGuid():N}";
+    private string PopupId => $"{EditorId}-popup";
+    private bool _isInitialized;
+    private bool _showCountryPopup;
+    private DotNetObjectReference<HtmlEditor>? _dotNetRef;
+
+    private static readonly string[] DefaultCountries = { "Georgia",
+        "United States", "Canada", "United Kingdom", "France", "Germany",
+        "Italy", "Spain", "Australia", "Japan", "Brazil",
+        "India", "China", "Mexico", "Russia", "South Africa",
+        "Argentina", "Chile", "Sweden", "Norway", "Netherlands"
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitializeEditor();
+        }
+    }
+
+    private async Task InitializeEditor()
+    {
+        try
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            var initialized = await JSRuntime.InvokeAsync<bool>(
+                "QuillInterop.initializeQuill",
+                EditorId,
+                _dotNetRef,
+                ShowToolbar
+            );
+
+            if (initialized)
+            {
+                _isInitialized = true;
+                if (!string.IsNullOrEmpty(Value))
+                {
+                    await JSRuntime.InvokeVoidAsync("QuillInterop.setContent", EditorId, Value);
+                }
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing editor: {ex.Message}");
+        }
+    }
+
+    [JSInvokable]
+    public async Task UpdateValue(string newValue)
+    {
+        if (Value != newValue)
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(Value);
+            StateHasChanged();
+        }
+    }
+
+    [JSInvokable]
+    public void OnEditorClicked()
+    {
+        _showCountryPopup = true;
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            await JSRuntime.InvokeVoidAsync("QuillInterop.positionPopup", EditorId, PopupId);
+        });
+    }
+
+    [JSInvokable]
+    public void OnClickOutside()
+    {
+        if (_showCountryPopup)
+        {
+            _showCountryPopup = false;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task InsertCountry(string country)
+    {
+        await JSRuntime.InvokeVoidAsync("QuillInterop.insertTextAtCursor", EditorId, country);
+        _showCountryPopup = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_isInitialized && JSRuntime != null)
+            {
+                await JSRuntime.InvokeVoidAsync("QuillInterop.dispose", EditorId);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error disposing editor: {ex.Message}");
+        }
+        finally
+        {
+            _dotNetRef?.Dispose();
+        }
+    }
+}

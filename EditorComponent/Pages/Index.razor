@@ -1,0 +1,37 @@
+@page "/"
+
+<PageTitle>HTML Editor Component Demo</PageTitle>
+
+<div class="container mt-4">
+    <h1>Blazor WebAssembly HTML Editor Component</h1>
+    <p class="lead">A feature-rich HTML editor with live preview and country selection popup.</p>
+    
+    <div class="alert alert-info mb-4">
+        <strong>Tip:</strong> Click inside the editor to open the country selection popup. Select a country to insert it at the cursor position.
+    </div>
+
+    <div class="mb-4">
+        <h2>Example 1: Editor with Toolbar</h2>
+        <HtmlEditor @bind-Value="htmlContent1" ShowToolbar="true" />
+    </div>
+
+    <div class="mb-4">
+        <h2>Example 2: Editor without Toolbar</h2>
+        <HtmlEditor @bind-Value="htmlContent2" ShowToolbar="false" />
+    </div>
+
+    <div class="mt-5">
+        <h3>Current HTML Content (Example 1):</h3>
+        <div class="card">
+            <div class="card-body">
+                <pre class="mb-0"><code>@htmlContent1</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string htmlContent1 = "<h2>Welcome to the HTML Editor!</h2><p>This is a <strong>powerful</strong> and <em>flexible</em> HTML editor component built with Blazor WebAssembly.</p><p>Click anywhere in this editor to see the country selection popup!</p>";
+    
+    private string htmlContent2 = "<p>This editor has the toolbar disabled. You can still click to insert countries!</p>";
+} 
